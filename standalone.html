@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sadhak Diary - सर्व साधक नोंदणी वही</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #d97706; --primary-hover: #b45309; --primary-light: #fef3c7; --primary-focus: rgba(217, 119, 6, 0.2);
+      --secondary: #0284c7; --success: #10b981; --success-bg: #ecfdf5; --success-border: #a7f3d0;
+      --danger: #ef4444; --danger-bg: #fef2f2; --bg-main: #f8fafc; --card-bg: #ffffff;
+      --text-main: #0f172a; --text-muted: #64748b; --text-subtle: #94a3b8; --border-color: #e2e8f0; --border-focus: #f59e0b;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05); --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08); --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-main); color: var(--text-main); line-height: 1.5; min-height: 100vh; display: flex; flex-direction: column;
+    }
+    .bg-decor {
+      position: fixed; top: 0; left: 0; right: 0; height: 280px;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #f1f5f9 100%);
+      z-index: -1; border-bottom: 1px solid rgba(217, 119, 6, 0.1);
+    }
+    .container { width: 100%; max-width: 960px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    .app-header { text-align: center; margin-bottom: 2rem; padding: 1rem 0; }
+    .logo-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem;
+      background: #ffffff; border: 1px solid rgba(217, 119, 6, 0.2); border-radius: var(--radius-full);
+      box-shadow: var(--shadow-sm); color: var(--primary); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem;
+    }
+    .app-title { font-size: 2.25rem; font-weight: 800; color: #1e293b; letter-spacing: -0.025em; margin-bottom: 0.5rem; }
+    .app-title span.highlight {
+      color: var(--primary); background: linear-gradient(135deg, #d97706, #b45309);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .app-subtitle { color: var(--text-muted); font-size: 1rem; max-width: 600px; margin: 0 auto; }
+    .top-action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem; }
+    .stats-badges-group { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .badge-counter {
+      display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; font-weight: 600;
+      padding: 0.35rem 0.75rem; border-radius: var(--radius-full); border: 1px solid var(--border-color); background: #ffffff; box-shadow: var(--shadow-sm);
+    }
+    .badge-counter.pill-green { border-color: #a7f3d0; color: #065f46; background: #ecfdf5; }
+    .badge-counter.pill-amber { border-color: #fde68a; color: #92400e; background: #fffbeb; }
+    .badge-counter.pill-blue { border-color: #bfdbfe; color: #1e40af; background: #eff6ff; }
+    .btn-secondary-action {
+      display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 600;
+      color: #1e293b; background: #ffffff; padding: 0.5rem 1rem; border-radius: var(--radius-md);
+      border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: pointer; transition: var(--transition);
+    }
+    .btn-secondary-action:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
+    .form-card {
+      background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md); padding: 1.75rem 2rem; margin-bottom: 1.75rem; transition: var(--transition);
+    }
+    .form-card:hover { box-shadow: var(--shadow-lg); border-color: #cbd5e1; }
+    .card-header { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
+    .card-icon-wrap {
+      width: 42px; height: 42px; border-radius: var(--radius-md); background: var(--primary-light);
+      color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;
+    }
+    .card-title-group h2 { font-size: 1.2rem; font-weight: 700; color: #1e293b; line-height: 1.3; }
+    .card-title-group p { font-size: 0.85rem; color: var(--text-muted); }
+    .status-selector-box { background: #f8fafc; border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem; }
+    .status-selector-title { font-size: 0.9rem; font-weight: 700; color: #1e293b; margin-bottom: 0.75rem; }
+    .status-options-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+    @media (max-width: 680px) { .status-options-grid { grid-template-columns: 1fr; } }
+    .status-option-label {
+      display: flex; align-items: center; gap: 0.65rem; padding: 0.75rem 1rem; background: #ffffff;
+      border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition);
+    }
+    .status-option-label.is-selected { border-color: var(--primary); background: #fffbeb; box-shadow: 0 0 0 1px var(--primary); }
+    .status-text-title { font-size: 0.875rem; font-weight: 600; color: #1e293b; }
+    .status-text-desc { font-size: 0.75rem; color: var(--text-muted); }
+    .info-notice-box {
+      background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.65rem; color: #1e40af; font-size: 0.85rem;
+    }
+    .form-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.25rem; }
+    .col-12 { grid-column: span 12; }
+    .col-6  { grid-column: span 6; }
+    .col-4  { grid-column: span 4; }
+    .col-3  { grid-column: span 3; }
+    @media (max-width: 768px) {
+      .col-6, .col-4, .col-3 { grid-column: span 12 !important; }
+      .form-card { padding: 1.25rem 1rem; }
+      .container { padding: 1rem 0.75rem 3rem; }
+      .app-title { font-size: 1.75rem; }
+    }
+    .form-group { display: flex; flex-direction: column; gap: 0.35rem; position: relative; }
+    .form-label { font-size: 0.875rem; font-weight: 600; color: #334155; display: flex; align-items: center; gap: 0.25rem; }
+    .required-star { color: var(--danger); font-weight: bold; }
+    .input-wrapper { position: relative; display: flex; align-items: center; }
+    .input-icon { position: absolute; left: 0.85rem; color: var(--text-subtle); pointer-events: none; font-size: 1rem; }
+    .form-control {
+      width: 100%; padding: 0.65rem 0.85rem; font-size: 0.925rem; font-family: inherit;
+      color: var(--text-main); background-color: #ffffff; border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm); transition: var(--transition); outline: none;
+    }
+    .form-control.has-icon { padding-left: 2.5rem; }
+    .form-control:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--primary-focus); }
+    select.form-control {
+      cursor: pointer; appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat; background-position: right 0.85rem center; background-size: 1rem; padding-right: 2.5rem;
+    }
+    select.form-control:disabled { background-color: #f1f5f9; cursor: not-allowed; opacity: 0.7; }
+    .helper-text { font-size: 0.775rem; color: var(--text-muted); }
+    .error-message { font-size: 0.775rem; color: var(--danger); font-weight: 500; display: none; margin-top: 0.2rem; }
+    .form-group.has-error .form-control { border-color: var(--danger); background-color: var(--danger-bg); }
+    .form-group.has-error .error-message { display: block; }
+    .dynamic-conditional-field {
+      max-height: 0; opacity: 0; overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+      pointer-events: none; margin-top: 0;
+    }
+    .dynamic-conditional-field.is-active { max-height: 120px; opacity: 1; pointer-events: auto; margin-top: 0.75rem; }
+    .status-section { display: none; }
+    .status-section.active { display: block; animation: fadeIn 0.3s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .form-actions-card {
+      background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+      padding: 1.25rem 2rem; box-shadow: var(--shadow-md); display: flex; align-items: center;
+      justify-content: flex-end; gap: 1rem; flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      font-family: inherit; font-size: 0.95rem; font-weight: 600; padding: 0.75rem 1.6rem;
+      border-radius: var(--radius-sm); border: 1px solid transparent; cursor: pointer; transition: var(--transition); text-decoration: none;
+    }
+    .btn-primary { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: #ffffff; box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3); }
+    .btn-primary:hover { background: linear-gradient(135deg, #b45309 0%, #92400e 100%); transform: translateY(-1px); }
+    .btn-outline { background: #ffffff; color: #475569; border: 1.5px solid var(--border-color); }
+    .btn-outline:hover { background: #f1f5f9; color: #1e293b; }
+    .success-banner {
+      display: none; background: var(--success-bg); border: 1.5px solid var(--success-border);
+      border-radius: var(--radius-md); padding: 1.25rem 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm);
+    }
+    .success-banner-content { display: flex; align-items: flex-start; gap: 1rem; }
+    .success-icon-wrap {
+      width: 40px; height: 40px; border-radius: 50%; background: #10b981; color: #ffffff;
+      display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;
+    }
+    .success-text h3 { font-size: 1.1rem; color: #065f46; font-weight: 700; margin-bottom: 0.25rem; }
+    .success-text p { font-size: 0.875rem; color: #047857; line-height: 1.4; }
+    .success-meta { margin-top: 0.5rem; font-size: 0.8rem; background: rgba(255, 255, 255, 0.7); padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); display: inline-block; font-family: monospace; }
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      background: #ffffff; width: 100%; max-width: 960px; max-height: 90vh;
+      border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); display: flex; flex-direction: column; overflow: hidden;
+    }
+    .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+    .modal-header h3 { font-size: 1.25rem; color: #1e293b; display: flex; align-items: center; gap: 0.5rem; }
+    .modal-close-btn { background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
+    .modal-body { padding: 1.5rem; overflow-y: auto; }
+    .modal-controls-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+    .filter-tabs-group { display: flex; gap: 0.35rem; background: #f1f5f9; padding: 0.25rem; border-radius: var(--radius-sm); }
+    .filter-tab-btn { border: none; background: transparent; padding: 0.4rem 0.8rem; font-size: 0.8rem; font-weight: 600; color: #64748b; border-radius: 6px; cursor: pointer; }
+    .filter-tab-btn.active { background: #ffffff; color: #1e293b; box-shadow: var(--shadow-sm); }
+    .records-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .records-table th { background: #f1f5f9; color: #475569; text-align: left; padding: 0.75rem 0.85rem; font-weight: 600; border-bottom: 2px solid var(--border-color); }
+    .records-table td { padding: 0.75rem 0.85rem; border-bottom: 1px solid var(--border-color); color: #334155; }
+    .records-table tr:hover { background: #f8fafc; }
+    .tag-badge { display: inline-block; padding: 0.2rem 0.55rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
+    .tag-badge.badge-completed { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .tag-badge.badge-aspiring { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .tag-badge.badge-none { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .app-footer { margin-top: auto; text-align: center; padding: 1.5rem; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border-color); background: #ffffff; }
+  </style>
+</head>
+<body>
+  <div class="bg-decor"></div>
+
+  <div class="container">
+    <header class="app-header">
+      <div class="logo-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+        <span>Shaktipat Parampara Registry</span>
+      </div>
+      <h1 class="app-title"><span>📖</span> Sadhak <span class="highlight">Diary</span></h1>
+      <p class="app-subtitle">सर्व साधकांसाठी नोंदणी व संपर्क प्रणाली — दीक्षा झालेले, दीक्षा घेणार/इच्छुक व सर्व साधक परिवार.</p>
+    </header>
+
+    <div class="top-action-bar">
+      <div class="stats-badges-group">
+        <div class="badge-counter pill-green"><span>🟢 दीक्षा झालेले:</span> <strong id="statCompletedCount">0</strong></div>
+        <div class="badge-counter pill-amber"><span>🟠 दीक्षा घेणार/इच्छुक:</span> <strong id="statAspiringCount">0</strong></div>
+        <div class="badge-counter pill-blue"><span>🔵 सामान्य साधक:</span> <strong id="statNoneCount">0</strong></div>
+      </div>
+      <button type="button" class="btn-secondary-action" id="openRecordsBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>साधक यादी पहा (View Records)</span>
+      </button>
+    </div>
+
+    <!-- Success Message Banner -->
+    <div id="successBanner" class="success-banner" role="alert">
+      <div class="success-banner-content">
+        <div class="success-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <div class="success-text" style="flex: 1;">
+          <h3 id="successTitle">नोंद यशस्वीरीत्या जतन झाली!</h3>
+          <p id="successMessage">साधकांची माहिती तपासली असून डेटाबेसमध्ये सुरक्षित सेव्ह करण्यात आली आहे.</p>
+          <div class="success-meta" id="successMeta">Record ID: #101 | Saved at: 12:00 PM</div>
+        </div>
+        <button type="button" class="btn btn-outline" id="bannerNewEntryBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">+ नवीन नोंद करा</button>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form id="sadhakForm" novalidate>
+      <!-- Personal Details -->
+      <section class="form-card">
+        <div class="card-header">
+          <div class="card-icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+          <div class="card-title-group"><h2>Personal Details (व्यक्तिगत माहिती)</h2><p>संपूर्ण नाव, जन्मदिनांक व मोबाईल क्रमांक</p></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group col-6" id="group-fullName">
+            <label for="fullName" class="form-label">Full Name (संपूर्ण नाव) <span class="required-star">*</span></label>
+            <div class="input-wrapper"><span class="input-icon">👤</span><input type="text" id="fullName" class="form-control has-icon" placeholder="उदा. रमेश चंद्र शर्मा" required></div>
+            <span class="error-message">कृपया संपूर्ण नाव प्रविष्ट करा.</span>
+          </div>
+          <div class="form-group col-3" id="group-dob">
+            <label for="dob" class="form-label">Date of Birth (जन्म तारीख) <span class="required-star">*</span></label>
+            <input type="date" id="dob" class="form-control" required>
+            <span class="error-message">कृपया जन्म तारीख निवडा.</span>
+          </div>
+          <div class="form-group col-3" id="group-mobile">
+            <label for="mobile" class="form-label">Mobile Number (मोबाईल क्र.) <span class="required-star">*</span></label>
+            <div class="input-wrapper"><span class="input-icon">📱</span><input type="tel" id="mobile" class="form-control has-icon" placeholder="10 अंकी नंबर" maxlength="10" required></div>
+            <span class="error-message">१० अंकी मोबाईल क्रमांक टाका.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Address Details -->
+      <section class="form-card">
+        <div class="card-header">
+          <div class="card-icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+          <div class="card-title-group"><h2>Address Details (पत्त्याचा तपशील)</h2><p>घर, रस्ता, राज्य, जिल्हा व तालुका</p></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group col-6" id="group-houseBuildingWard">
+            <label for="houseBuildingWard" class="form-label">House/Plot No, Building, Ward <span class="required-star">*</span></label>
+            <input type="text" id="houseBuildingWard" class="form-control" placeholder="उदा. फ्लॅट 204, ओंकार सोसायटी" required>
+            <span class="error-message">घराचा तपशील टाका.</span>
+          </div>
+          <div class="form-group col-6" id="group-streetAreaLandmark">
+            <label for="streetAreaLandmark" class="form-label">Street, Area, Landmark <span class="required-star">*</span></label>
+            <input type="text" id="streetAreaLandmark" class="form-control" placeholder="उदा. मुख्य रस्ता, मंदिरजवळ" required>
+            <span class="error-message">रस्ता किंवा परिसर टाका.</span>
+          </div>
+          <div class="form-group col-4" id="group-state">
+            <label for="stateSelect" class="form-label">State (राज्य) <span class="required-star">*</span></label>
+            <select id="stateSelect" class="form-control" required><option value="">-- राज्य निवडा --</option></select>
+            <span class="error-message">राज्य निवडा.</span>
+          </div>
+          <div class="form-group col-4" id="group-district">
+            <label for="districtSelect" class="form-label">District (जिल्हा) <span class="required-star">*</span></label>
+            <select id="districtSelect" class="form-control" disabled required><option value="">-- आधी राज्य निवडा --</option></select>
+            <span class="error-message">जिल्हा निवडा.</span>
+          </div>
+          <div class="form-group col-4" id="group-tehsil">
+            <label for="tehsilSelect" class="form-label">Tehsil / Taluka (तालुका) <span class="required-star">*</span></label>
+            <select id="tehsilSelect" class="form-control" disabled required><option value="">-- आधी जिल्हा निवडा --</option></select>
+            <span class="error-message">तालुका निवडा.</span>
+          </div>
+          <div class="form-group col-4" id="group-pincode">
+            <label for="pincode" class="form-label">Pincode (पिनकोड) <span class="required-star">*</span></label>
+            <input type="text" id="pincode" class="form-control" placeholder="6-अंकी पिनकोड" maxlength="6" required>
+            <span class="error-message">६ अंकी पिनकोड टाका.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Diksha Details & Status -->
+      <section class="form-card">
+        <div class="card-header">
+          <div class="card-icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg></div>
+          <div class="card-title-group"><h2>Diksha Details & Status (दीक्षा स्थिती व तपशील)</h2><p>दीक्षा झालेली आहे, घेणार/इच्छुक आहेत किंवा सामान्य साधक</p></div>
+        </div>
+
+        <div class="status-selector-box">
+          <div class="status-selector-title">☸️ दीक्षा स्थिती निवडा (Select Diksha Status): <span class="required-star">*</span></div>
+          <div class="status-options-grid">
+            <label class="status-option-label is-selected" id="labelStatusCompleted">
+              <input type="radio" name="diksha_status" value="दीक्षा झालेली आहे" checked>
+              <div><div class="status-text-title">🟢 दीक्षा झालेली आहे</div><div class="status-text-desc">दीक्षा प्राप्त साधक (Initiated)</div></div>
+            </label>
+            <label class="status-option-label" id="labelStatusAspiring">
+              <input type="radio" name="diksha_status" value="दीक्षा घेणार / इच्छुक">
+              <div><div class="status-text-title">🟠 दीक्षा घेणार / इच्छुक</div><div class="status-text-desc">दीक्षा घेण्याची इच्छा / आगामी</div></div>
+            </label>
+            <label class="status-option-label" id="labelStatusNone">
+              <input type="radio" name="diksha_status" value="दीक्षा झालेली नाही">
+              <div><div class="status-text-title">🔵 दीक्षा झालेली नाही</div><div class="status-text-desc">सामान्य साधक / परिवार</div></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Section 1: Completed -->
+        <div id="sectionStatusCompleted" class="status-section active">
+          <div class="form-grid">
+            <div class="form-group col-4" id="group-dikshaDate">
+              <label for="dikshaDate" class="form-label">Diksha Date (दीक्षा दिनांक) <span class="required-star">*</span></label>
+              <input type="date" id="dikshaDate" class="form-control" required>
+              <span class="error-message">दीक्षा दिनांक निवडा.</span>
+            </div>
+            <div class="form-group col-4" id="group-dikshaType">
+              <label for="dikshaTypeSelect" class="form-label">Diksha Type (दीक्षा प्रकार) <span class="required-star">*</span></label>
+              <select id="dikshaTypeSelect" class="form-control" required>
+                <option value="">-- दीक्षा प्रकार निवडा --</option>
+                <option value="Mantra Diksha">Mantra Diksha</option>
+                <option value="Shaktipat Diksha">Shaktipat Diksha</option>
+                <option value="Other">Other</option>
+              </select>
+              <div id="otherDikshaTypeWrapper" class="dynamic-conditional-field">
+                <input type="text" id="dikshaTypeOther" class="form-control" placeholder="इतर प्रकार नमूद करा">
+              </div>
+            </div>
+            <div class="form-group col-4" id="group-dikshaGuru">
+              <label for="dikshaGuruSelect" class="form-label">Diksha Guru Name (गुरूंचे नाव) <span class="required-star">*</span></label>
+              <select id="dikshaGuruSelect" class="form-control" required>
+                <option value="">-- गुरूंचे नाव निवडा --</option>
+                <option value="Swami Vishnutirth Maharaj">Swami Vishnutirth Maharaj</option>
+                <option value="Swami Shivom Tirth Maharaj">Swami Shivom Tirth Maharaj</option>
+                <option value="Swami Gopal Tirth Maharaj">Swami Gopal Tirth Maharaj</option>
+                <option value="Swami Sureshanand Tirth Maharaj">Swami Sureshanand Tirth Maharaj</option>
+                <option value="Swami Madhavanand Tirth Maharaj">Swami Madhavanand Tirth Maharaj</option>
+                <option value="Other">Other</option>
+              </select>
+              <div id="otherGuruWrapper" class="dynamic-conditional-field">
+                <input type="text" id="dikshaGuruOther" class="form-control" placeholder="गुरूंचे नाव टाईप करा">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Aspiring -->
+        <div id="sectionStatusAspiring" class="status-section">
+          <div class="info-notice-box">ℹ️ <div><strong>दीक्षा इच्छुक साधक:</strong> दीक्षा तारीख अनिवार्य नाही. तुम्ही इच्छित दीक्षा प्रकार किंवा आगामी शिबिराचा संदर्भ देऊ शकता.</div></div>
+          <div class="form-grid">
+            <div class="form-group col-4">
+              <label class="form-label">इच्छित दीक्षा प्रकार</label>
+              <select id="aspiringTypeSelect" class="form-control">
+                <option value="Shaktipat Diksha">Shaktipat Diksha</option>
+                <option value="Mantra Diksha">Mantra Diksha</option>
+                <option value="मार्गदर्शन हवे आहे">मार्गदर्शन हवे आहे</option>
+              </select>
+            </div>
+            <div class="form-group col-4">
+              <label class="form-label">इच्छित गुरू / परंपरा</label>
+              <select id="aspiringGuruSelect" class="form-control">
+                <option value="आश्रम मार्गदर्शन">आश्रम मार्गदर्शन</option>
+                <option value="Swami Vishnutirth Maharaj Parampara">Swami Vishnutirth Maharaj Parampara</option>
+                <option value="Swami Shivom Tirth Maharaj Parampara">Swami Shivom Tirth Maharaj Parampara</option>
+                <option value="Swami Gopal Tirth Maharaj Parampara">Swami Gopal Tirth Maharaj Parampara</option>
+              </select>
+            </div>
+            <div class="form-group col-4">
+              <label class="form-label">अपेक्षित तारीख / शिबिर</label>
+              <input type="date" id="aspiringDateInput" class="form-control">
+            </div>
+            <div class="form-group col-12">
+              <label class="form-label">काही पूर्व-साधना / टिप्पणी</label>
+              <input type="text" id="aspiringNotesInput" class="form-control" placeholder="उदा. नियमित नामजप/ध्यान, आगामी शिबिरासाठी इच्छुक">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: None -->
+        <div id="sectionStatusNone" class="status-section">
+          <div class="info-notice-box" style="background: #f0fdf4; border-color: #bbf7d0; color: #166534;">🌸 <div><strong>सामान्य साधक / परिवार सदस्य:</strong> दीक्षा दिनांक किंवा गुरू अनिवार्य नाहीत.</div></div>
+          <div class="form-grid">
+            <div class="form-group col-6">
+              <label class="form-label">साधनेची रुची / सहभाग</label>
+              <select id="generalInterestSelect" class="form-control">
+                <option value="सत्संग व ध्यान">सत्संग व ध्यान</option>
+                <option value="नामजप व ग्रंथ वाचन">नामजप व ग्रंथ वाचन</option>
+                <option value="आश्रम सेवा व दर्शन">आश्रम सेवा व दर्शन</option>
+                <option value="सामान्य साधक">सामान्य साधक</option>
+              </select>
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label">विशेष टिप्पणी / संदर्भ</label>
+              <input type="text" id="generalNotesInput" class="form-control" placeholder="उदा. सत्संग मंडळ सदस्य">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="form-actions-card">
+        <button type="button" id="resetBtn" class="btn btn-outline">फॉर्म साफ करा (Reset)</button>
+        <button type="submit" id="submitBtn" class="btn btn-primary">साधक नोंद जतन करा (Save Record)</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Records Modal -->
+  <div id="recordsModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>डेटाबेसमधील सर्व साधकांची यादी (Sadhak Directory)</h3>
+        <button type="button" class="modal-close-btn" id="closeRecordsBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-controls-row">
+          <div class="filter-tabs-group">
+            <button type="button" class="filter-tab-btn active" data-status="all">सर्व (All)</button>
+            <button type="button" class="filter-tab-btn" data-status="दीक्षा झालेली आहे">🟢 दीक्षा झालेले</button>
+            <button type="button" class="filter-tab-btn" data-status="दीक्षा घेणार / इच्छुक">🟠 दीक्षा घेणार/इच्छुक</button>
+            <button type="button" class="filter-tab-btn" data-status="दीक्षा झालेली नाही">🔵 सामान्य साधक</button>
+          </div>
+        </div>
+        <div style="margin-bottom: 1rem;"><input type="text" id="recordSearchInput" class="form-control" placeholder="नाव, मोबाईल, जिल्हा शोधा..."></div>
+        <div style="overflow-x: auto;">
+          <table class="records-table">
+            <thead>
+              <tr><th>ID</th><th>साधकाचे नाव</th><th>मोबाईल</th><th>स्थान</th><th>दीक्षा स्थिती</th><th>तपशील</th><th>गुरू / संदर्भ</th></tr>
+            </thead>
+            <tbody id="recordsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer"><p><strong>Sadhak Diary</strong> &copy; 2026. All Sadhak Registry.</p></footer>
+
+  <script>
+    const INDIAN_LOCATIONS = {
+      "Maharashtra": {
+        "Pune": ["Pune City", "Haveli", "Shirur", "Baramati", "Junnar", "Khed"],
+        "Nashik": ["Nashik", "Sinnar", "Igatpuri", "Dindori", "Niphad"],
+        "Nagpur": ["Nagpur Urban", "Nagpur Rural", "Kamptee", "Hingna", "Katol"],
+        "Mumbai City": ["Colaba", "Fort", "Dadar", "Worli"],
+        "Thane": ["Thane", "Kalyan", "Bhiwandi", "Ulhasnagar"]
+      },
+      "Madhya Pradesh": {
+        "Indore": ["Indore", "Depalpur", "Sanwer", "Mhow", "Rau"],
+        "Dewas": ["Dewas", "Sonkatch", "Bagli", "Kannod", "Tonk Khurd"],
+        "Ujjain": ["Ujjain", "Badnagar", "Mahidpur", "Tarana", "Nagda"],
+        "Bhopal": ["Huzur", "Berasia", "Kolar"]
+      },
+      "Gujarat": { "Ahmedabad": ["Ahmedabad City", "Daskroi", "Sanand"], "Vadodara": ["Vadodara", "Padra"] },
+      "Other State": { "Other District": ["Other Tehsil"] }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const stateSelect = document.getElementById('stateSelect');
+      const districtSelect = document.getElementById('districtSelect');
+      const tehsilSelect = document.getElementById('tehsilSelect');
+      const statusRadios = document.querySelectorAll('input[name="diksha_status"]');
+      const secCompleted = document.getElementById('sectionStatusCompleted');
+      const secAspiring = document.getElementById('sectionStatusAspiring');
+      const secNone = document.getElementById('sectionStatusNone');
+      const dikshaTypeSelect = document.getElementById('dikshaTypeSelect');
+      const otherDikshaTypeWrapper = document.getElementById('otherDikshaTypeWrapper');
+      const dikshaGuruSelect = document.getElementById('dikshaGuruSelect');
+      const otherGuruWrapper = document.getElementById('otherGuruWrapper');
+
+      // Populate States
+      Object.keys(INDIAN_LOCATIONS).sort().forEach(s => {
+        const opt = document.createElement('option'); opt.value = s; opt.textContent = s; stateSelect.appendChild(opt);
+      });
+
+      stateSelect.addEventListener('change', () => {
+        const s = stateSelect.value;
+        districtSelect.innerHTML = '<option value="">-- जिल्हा निवडा --</option>';
+        tehsilSelect.innerHTML = '<option value="">-- आधी जिल्हा निवडा --</option>';
+        tehsilSelect.disabled = true;
+        if (s && INDIAN_LOCATIONS[s]) {
+          districtSelect.disabled = false;
+          Object.keys(INDIAN_LOCATIONS[s]).sort().forEach(d => {
+            const opt = document.createElement('option'); opt.value = d; opt.textContent = d; districtSelect.appendChild(opt);
+          });
+        } else { districtSelect.disabled = true; }
+      });
+
+      districtSelect.addEventListener('change', () => {
+        const s = stateSelect.value, d = districtSelect.value;
+        tehsilSelect.innerHTML = '<option value="">-- तालुका निवडा --</option>';
+        if (d && INDIAN_LOCATIONS[s] && INDIAN_LOCATIONS[s][d]) {
+          tehsilSelect.disabled = false;
+          INDIAN_LOCATIONS[s][d].forEach(t => {
+            const opt = document.createElement('option'); opt.value = t; opt.textContent = t; tehsilSelect.appendChild(opt);
+          });
+        } else { tehsilSelect.disabled = true; }
+      });
+
+      function handleStatus() {
+        const val = document.querySelector('input[name="diksha_status"]:checked').value;
+        document.querySelectorAll('.status-option-label').forEach(lbl => {
+          lbl.classList.toggle('is-selected', lbl.querySelector('input').checked);
+        });
+        secCompleted.classList.toggle('active', val === 'दीक्षा झालेली आहे');
+        secAspiring.classList.toggle('active', val === 'दीक्षा घेणार / इच्छुक');
+        secNone.classList.toggle('active', val === 'दीक्षा झालेली नाही');
+      }
+
+      statusRadios.forEach(r => r.addEventListener('change', handleStatus));
+
+      dikshaTypeSelect.addEventListener('change', () => {
+        otherDikshaTypeWrapper.classList.toggle('is-active', dikshaTypeSelect.value === 'Other');
+      });
+      dikshaGuruSelect.addEventListener('change', () => {
+        otherGuruWrapper.classList.toggle('is-active', dikshaGuruSelect.value === 'Other');
+      });
+
+      document.getElementById('mobile').addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10));
+      document.getElementById('pincode').addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6));
+
+      // Submit
+      document.getElementById('sadhakForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fn = document.getElementById('fullName').value.trim();
+        const mob = document.getElementById('mobile').value.trim();
+        const dob = document.getElementById('dob').value;
+        const st = stateSelect.value, dist = districtSelect.value, teh = tehsilSelect.value;
+        const pin = document.getElementById('pincode').value;
+        const status = document.querySelector('input[name="diksha_status"]:checked').value;
+
+        if (!fn || mob.length !== 10 || !dob || !st || !dist || !teh || pin.length !== 6) {
+          alert('कृपया सर्व आवश्यक माहिती अचूक भरा.'); return;
+        }
+
+        const payload = {
+          full_name: fn, dob, mobile: mob,
+          house_building_ward: document.getElementById('houseBuildingWard').value.trim() || '-',
+          street_area_landmark: document.getElementById('streetAreaLandmark').value.trim() || '-',
+          state: st, district: dist, tehsil: teh, pincode: pin,
+          diksha_status: status,
+          diksha_date: status === 'दीक्षा झालेली आहे' ? document.getElementById('dikshaDate').value : null,
+          diksha_type: status === 'दीक्षा झालेली आहे' ? dikshaTypeSelect.value : (status === 'दीक्षा घेणार / इच्छुक' ? document.getElementById('aspiringTypeSelect').value : 'लागू नाही'),
+          diksha_guru: status === 'दीक्षा झालेली आहे' ? dikshaGuruSelect.value : (status === 'दीक्षा घेणार / इच्छुक' ? document.getElementById('aspiringGuruSelect').value : 'लागू नाही'),
+          interest_notes: status === 'दीक्षा झालेली नाही' ? document.getElementById('generalInterestSelect').value : (status === 'दीक्षा घेणार / इच्छुक' ? document.getElementById('aspiringNotesInput').value : 'दीक्षा प्राप्त')
+        };
+
+        try {
+          const res = await fetch('/api/sadhaks', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+          const d = await res.json();
+          if (d.success) { showBanner(fn, '#' + d.record_id, status); updateCounts(); return; }
+        } catch(err) {}
+
+        const recs = JSON.parse(localStorage.getItem('sadhak_records') || '[]');
+        payload.id = recs.length + 1;
+        recs.push(payload);
+        localStorage.setItem('sadhak_records', JSON.stringify(recs));
+        showBanner(fn, 'LOC-#' + payload.id, status);
+        updateCounts();
+      });
+
+      function showBanner(name, id, status) {
+        document.getElementById('successTitle').textContent = 'नोंद यशस्वीरीत्या जतन झाली!';
+        document.getElementById('successMessage').innerHTML = `साधक <strong>${name}</strong> (${status}) यांची नोंद डेटाबेसमध्ये जतन झाली.`;
+        document.getElementById('successMeta').textContent = `Record ID: ${id} | वेळ: ` + new Date().toLocaleTimeString();
+        document.getElementById('successBanner').style.display = 'block';
+        document.getElementById('sadhakForm').reset();
+        handleStatus();
+      }
+
+    function renderBirthdays(list) {
+      if (!list.length) {
+        document.getElementById('birthdaysGrid').innerHTML = '<p style="text-align:center;padding:2rem;">पुढील ३० दिवसांत कोणतेही वाढदिवस नाहीत.</p>';
+        return;
+      }
+      const EMOJI_BLESSINGS = "\u{1F339}\u{1F9C3}\u{1F36D}\u{1F36B}\u{1F36C}\u{1F9C9}\u{1F959}\u{1FAB7}\u{1F353}\u{1F34D}\u{1F351}\u{1F490}\u{1FAD3}\u{1FAD0}\u{1F34E}\u{1F35F}\u{1F360}\u{1F345}\u{1F350}\u{1F352}\u{1F96D}\u{1F96F}\u{1F32D}\u{1F339}";
+      const EMOJI_PRAY = "\u{1F64F}\u{1F339}";
+
+      document.getElementById('birthdaysGrid').innerHTML = list.map(item => {
+        const salutationName = item.full_name.trim();
+        const locLine = item.district ? `${item.street_area_landmark || ''}, ${item.district}\n` : '';
+        const wishMsg = `आ श्री ${salutationName}\n${locLine}भाऊजी आज आपला वाढदिवस आहे या शुभ दिनाच्या आपल्याला खूप खूप खूप शुभेच्छा ${EMOJI_PRAY}\nप पू श्री गुरुदेव जी चे आशीर्वाद सदैव आपल्या पाठीशी आहेत ${EMOJI_BLESSINGS}`;
+        const waLink = `https://api.whatsapp.com/send?phone=91${item.mobile}&text=${encodeURIComponent(wishMsg)}`;
+        
+        return `
+          <div class="anniversary-card">
+            <div class="anniversary-name">${item.full_name}</div>
+            <div>जन्म तारीख: ${item.dob}</div>
+            <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.6rem;">
+              <a href="${waLink}" target="_blank" class="btn-whatsapp-wish" style="flex:1;">
+                📲 WhatsApp वर पाठवा
+              </a>
+              <button type="button" class="btn btn-outline btn-copy-msg" data-msg="${wishMsg.replace(/"/g, '&quot;')}" style="padding:0.4rem 0.6rem;font-size:0.8rem;border:1px solid #cbd5e1;background:#fff;border-radius:6px;cursor:pointer;">
+                📋 कॉपी
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.querySelectorAll('.btn-copy-msg').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const msg = btn.dataset.msg;
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(msg).then(() => {
+              const orig = btn.innerHTML;
+              btn.innerHTML = '✅ कॉपी झाले!';
+              setTimeout(() => btn.innerHTML = orig, 2500);
+            });
+          }
+        });
+      });
+    }
+
+      // Modal
+      const modal = document.getElementById('recordsModal');
+      document.getElementById('openRecordsBtn').addEventListener('click', async () => {
+        modal.classList.add('active');
+        let recs = [];
+        try { const res = await fetch('/api/sadhaks'); if (res.ok) recs = await res.json(); } catch(e) {}
+        if (!recs.length) recs = JSON.parse(localStorage.getItem('sadhak_records') || '[]');
+        renderTbl(recs);
+      });
+
+      function renderTbl(recs) {
+        const tbody = document.getElementById('recordsTableBody');
+        if (!recs.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;">नोंदी सापडल्या नाहीत.</td></tr>'; return; }
+        tbody.innerHTML = recs.map(r => `
+          <tr>
+            <td><strong>#${r.id}</strong></td>
+            <td><strong>${r.full_name}</strong><br><small>DOB: ${r.dob}</small></td>
+            <td>${r.mobile}</td>
+            <td>${r.district}, ${r.state}</td>
+            <td><span class="tag-badge ${r.diksha_status === 'दीक्षा झालेली आहे' ? 'badge-completed' : (r.diksha_status === 'दीक्षा घेणार / इच्छुक' ? 'badge-aspiring' : 'badge-none')}">${r.diksha_status}</span></td>
+            <td>${r.diksha_date ? 'दिनांक: ' + r.diksha_date : (r.interest_notes || '-')}</td>
+            <td>${r.diksha_guru || '-'}</td>
+          </tr>
+        `).join('');
+      }
+
+      document.getElementById('closeRecordsBtn').addEventListener('click', () => modal.classList.remove('active'));
+      document.getElementById('bannerNewEntryBtn').addEventListener('click', () => document.getElementById('successBanner').style.display = 'none');
+      updateCounts();
+    });
+  </script>
+</body>
+</html>

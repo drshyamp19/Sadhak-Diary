@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>साधक डायरी - साधक नोंदणी व संपर्क वही</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="bg-decor"></div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-top-row">
+        <!-- Language Selector -->
+        <div class="language-selector" id="langSelector">
+          <button type="button" class="lang-btn active" data-lang="mr">मराठी</button>
+          <button type="button" class="lang-btn" data-lang="hi">हिंदी</button>
+          <button type="button" class="lang-btn" data-lang="en">English</button>
+        </div>
+
+        <!-- Registry Badge -->
+        <div class="logo-badge">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 6v6l4 2"></path>
+          </svg>
+          <span data-i18n="appBadge">शक्तिपात परंपरा नोंदवही</span>
+        </div>
+      </div>
+
+      <h1 class="app-title">
+        <span>📖</span> <span data-i18n="appTitle">साधक</span> <span class="highlight" data-i18n="appTitleHighlight">डायरी</span>
+      </h1>
+      <p class="app-subtitle" data-i18n="appSubtitle">
+        सर्व साधकांसाठी अधिकृत नोंदणी व संपर्क प्रणाली — दीक्षा घेतलेले, दीक्षा घेणारे आणि साधक परिवार.
+      </p>
+    </header>
+
+    <!-- Top Action / Stats Bar -->
+    <div class="top-action-bar">
+      <div class="stats-badges-group" id="statsBadgesGroup">
+        <div class="badge-counter pill-green">
+          <span>🟢 <span data-i18n="statCompleted">दीक्षा झालेले</span>:</span>
+          <strong id="statCompletedCount">0</strong>
+        </div>
+        <div class="badge-counter pill-amber">
+          <span>🟠 <span data-i18n="statAspiring">दीक्षा घेणारे/इच्छुक</span>:</span>
+          <strong id="statAspiringCount">0</strong>
+        </div>
+        <div class="badge-counter pill-blue">
+          <span>🔵 <span data-i18n="statNone">साधक परिवार</span>:</span>
+          <strong id="statNoneCount">0</strong>
+        </div>
+      </div>
+
+      <div class="action-buttons-group">
+        <!-- Tracker Button -->
+        <button type="button" class="btn-secondary-action btn-anniversary-pulse" id="openTrackerBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"></path>
+            <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"></path>
+            <path d="M2 21h20"></path>
+            <path d="M7 8v3"></path>
+            <path d="M12 8v3"></path>
+            <path d="M17 8v3"></path>
+            <path d="M7 4h.01"></path>
+            <path d="M12 4h.01"></path>
+            <path d="M17 4h.01"></path>
+          </svg>
+          <span data-i18n="anniversariesBtn">उत्सव व स्मरण</span>
+        </button>
+
+        <!-- Directory Button -->
+        <button type="button" class="btn-secondary-action" id="openRecordsBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+          <span data-i18n="viewRecordsBtn">साधक यादी पहा</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Success Message Banner -->
+    <div id="successBanner" class="success-banner" role="alert">
+      <div class="success-banner-content">
+        <div class="success-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="success-text" style="flex: 1;">
+          <h3 id="successTitle">नोंद यशस्वीरीत्या जतन झाली!</h3>
+          <p id="successMessage">साधकांची माहिती तपासली असून डेटाबेसमध्ये सुरक्षित सेव्ह करण्यात आली आहे.</p>
+          <div class="success-meta" id="successMeta">नोंद क्रमांक: #१०१ | वेळ: १२:०० PM</div>
+        </div>
+        <button type="button" class="btn btn-outline" id="bannerNewEntryBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+          + नवीन नोंद करा
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Data Entry Form -->
+    <form id="sadhakForm" novalidate>
+      
+      <!-- Card 1: Personal Information & Photo / Live Selfie -->
+      <section class="form-card">
+        <div class="card-header">
+          <div class="card-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <h2 data-i18n="card1Title">व्यक्तिगत माहिती</h2>
+            <p data-i18n="card1Subtitle">साधकाचे संपूर्ण नाव, जन्म तारीख, मोबाईल क्रमांक व फोटो</p>
+          </div>
+        </div>
+
+        <!-- Photo & Live Selfie Box -->
+        <div class="photo-upload-container">
+          <div class="avatar-preview-box" id="avatarPreviewBox">
+            <span class="avatar-placeholder-icon" id="avatarPlaceholderIcon">👤</span>
+            <img id="avatarImage" alt="Sadhak Photo">
+          </div>
+          <div class="photo-controls-group">
+            <h4 data-i18n="photoLabel">साधकाचा फोटो</h4>
+            <p data-i18n="photoHint">कॅमेऱ्याने थेट सेल्फी घ्या किंवा गॅलरीतून निवडा</p>
+            <div class="photo-btn-row">
+              <!-- Live Selfie / Camera Button -->
+              <button type="button" class="btn-photo-action btn-photo-camera" id="openCameraBtn">
+                📸 <span data-i18n="cameraBtn">कॅमेरा / सेल्फी घ्या</span>
+              </button>
+              
+              <!-- File / Gallery Button -->
+              <button type="button" class="btn-photo-action" id="choosePhotoBtn">
+                📁 <span data-i18n="photoUploadBtn">गॅलरीतून निवडा</span>
+              </button>
+              
+              <!-- Remove Button -->
+              <button type="button" class="btn-photo-action" id="removePhotoBtn" style="display: none; color: #ef4444;">
+                ✕ <span data-i18n="photoRemoveBtn">काढून टाका</span>
+              </button>
+
+              <!-- Hidden Inputs -->
+              <input type="file" id="photoFileInput" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;">
+              <input type="file" id="cameraMobileDirectInput" accept="image/*" capture="user" style="display: none;">
+              <input type="hidden" id="photoUrlInput" name="photo_url">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <!-- Full Name -->
+          <div class="form-group col-6" id="group-fullName">
+            <label for="fullName" class="form-label">
+              <span data-i18n="fullNameLabel">संपूर्ण नाव</span> <span class="required-star">*</span>
+            </label>
+            <div class="input-wrapper">
+              <span class="input-icon">👤</span>
+              <input type="text" id="fullName" name="full_name" class="form-control has-icon" placeholder="उदा. रमेश चंद्र शर्मा" required autocomplete="name">
+            </div>
+            <span class="error-message" data-i18n="fullNameError">कृपया संपूर्ण नाव प्रविष्ट करा (किमान ३ अक्षरे).</span>
+          </div>
+
+          <!-- Date of Birth -->
+          <div class="form-group col-3" id="group-dob">
+            <label for="dob" class="form-label">
+              <span data-i18n="dobLabel">जन्म तारीख</span> <span class="required-star">*</span>
+            </label>
+            <div class="input-wrapper">
+              <input type="date" id="dob" name="dob" class="form-control" required>
+            </div>
+            <span class="error-message" data-i18n="dobError">कृपया योग्य जन्म तारीख निवडा.</span>
+          </div>
+
+          <!-- Mobile Number -->
+          <div class="form-group col-3" id="group-mobile">
+            <label for="mobile" class="form-label">
+              <span data-i18n="mobileLabel">मोबाईल क्रमांक</span> <span class="required-star">*</span>
+            </label>
+            <div class="input-wrapper">
+              <span class="input-icon">📱</span>
+              <input type="tel" id="mobile" name="mobile" class="form-control has-icon" placeholder="१० अंकी मोबाईल नंबर" maxlength="10" required autocomplete="tel">
+            </div>
+            <span class="helper-text" data-i18n="mobileHint">१० अंकी मोबाईल क्रमांक</span>
+            <span class="error-message" data-i18n="mobileError">कृपया वैध १० अंकी मोबाईल क्रमांक टाका.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card 2: Address Details -->
+      <section class="form-card">
+        <div class="card-header">
+          <div class="card-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <h2 data-i18n="card2Title">पत्त्याचा तपशील</h2>
+            <p data-i18n="card2Subtitle">राहण्याचे ठिकाण, राज्य, जिल्हा, तहसील व पिनकोड</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <!-- House / Building / Ward -->
+          <div class="form-group col-6" id="group-houseBuildingWard">
+            <label for="houseBuildingWard" class="form-label">
+              <span data-i18n="houseLabel">घर / इमारत / वॉर्ड क्रमांक</span> <span class="required-star">*</span>
+            </label>
+            <input type="text" id="houseBuildingWard" name="house_building_ward" class="form-control" placeholder="उदा. फ्लॅट २०४, ओंकार सोसायटी, वॉर्ड १२" required>
+            <span class="error-message" data-i18n="houseError">कृपया घराचा तपशील टाका.</span>
+          </div>
+
+          <!-- Street / Area / Landmark -->
+          <div class="form-group col-6" id="group-streetAreaLandmark">
+            <label for="streetAreaLandmark" class="form-label">
+              <span data-i18n="streetLabel">रस्ता / परिसर / खूण</span> <span class="required-star">*</span>
+            </label>
+            <input type="text" id="streetAreaLandmark" name="street_area_landmark" class="form-control" placeholder="उदा. शिव मंदिरजवळ, मुख्य रस्ता" required>
+            <span class="error-message" data-i18n="streetError">कृपया रस्ता किंवा परिसराचा तपशील टाका.</span>
+          </div>
+
+          <!-- State Dropdown -->
+          <div class="form-group col-4" id="group-state">
+            <label for="stateSelect" class="form-label">
+              <span data-i18n="stateLabel">राज्य</span> <span class="required-star">*</span>
+            </label>
+            <select id="stateSelect" name="state" class="form-control" required>
+              <option value="">-- राज्य निवडा --</option>
+            </select>
+            <span class="error-message" data-i18n="stateError">कृपया राज्य निवडा.</span>
+          </div>
+
+          <!-- District Dropdown -->
+          <div class="form-group col-4" id="group-district">
+            <label for="districtSelect" class="form-label">
+              <span data-i18n="districtLabel">जिल्हा</span> <span class="required-star">*</span>
+            </label>
+            <select id="districtSelect" name="district" class="form-control" disabled required>
+              <option value="">-- आधी राज्य निवडा --</option>
+            </select>
+            <span class="error-message" data-i18n="districtError">कृपया जिल्हा निवडा.</span>
+          </div>
+
+          <!-- Tehsil/Taluka Dropdown -->
+          <div class="form-group col-4" id="group-tehsil">
+            <label for="tehsilSelect" class="form-label">
+              <span data-i18n="tehsilLabel">तहसील / तालुका</span> <span class="required-star">*</span>
+            </label>
+            <select id="tehsilSelect" name="tehsil" class="form-control" disabled required>
+              <option value="">-- आधी जिल्हा निवडा --</option>
+            </select>
+            <span class="error-message" data-i18n="tehsilError">कृपया तहसील निवडा.</span>
+          </div>
+
+          <!-- Pincode -->
+          <div class="form-group col-4" id="group-pincode">
+            <label for="pincode" class="form-label">
+              <span data-i18n="pincodeLabel">पिनकोड</span> <span class="required-star">*</span>
+            </label>
+            <div class="input-wrapper">
+              <input type="text" id="pincode" name="pincode" class="form-control" placeholder="६ अंकी पिनकोड" maxlength="6" inputmode="numeric" required>
+            </div>
+            <span class="helper-text" data-i18n="pincodeHint">६ अंकी पोस्टल पिनकोड</span>
+            <span class="error-message" data-i18n="pincodeError">कृपया योग्य ६ अंकी पिनकोड टाका.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card 3: Diksha Details & Status -->
+      <section class="form-card">
+        <div class="card-header">
+          <div class="card-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <h2 data-i18n="card3Title">दीक्षा स्थिती व माहिती</h2>
+            <p data-i18n="card3Subtitle">दीक्षा झालेली आहे, घेणार आहेत किंवा सामान्य साधक परिवार</p>
+          </div>
+        </div>
+
+        <!-- Diksha Status Selector -->
+        <div class="status-selector-box">
+          <div class="status-selector-title">
+            <span>☸️</span> <span data-i18n="statusSelectTitle">दीक्षा स्थिती निवडा:</span> <span class="required-star">*</span>
+          </div>
+          <div class="status-options-grid">
+            <label class="status-option-label is-selected" id="labelStatusCompleted">
+              <input type="radio" name="diksha_status" value="दीक्षा झालेली आहे" checked>
+              <div>
+                <div class="status-text-title" data-i18n="statusOptCompletedTitle">दीक्षा झालेली आहे</div>
+                <div class="status-text-desc" data-i18n="statusOptCompletedDesc">दीक्षा प्राप्त साधक</div>
+              </div>
+            </label>
+
+            <label class="status-option-label" id="labelStatusAspiring">
+              <input type="radio" name="diksha_status" value="दीक्षा घेणार / इच्छुक">
+              <div>
+                <div class="status-text-title" data-i18n="statusOptAspiringTitle">दीक्षा घेणार / इच्छुक</div>
+                <div class="status-text-desc" data-i18n="statusOptAspiringDesc">दीक्षा घेण्याची इच्छा / आगामी शिबिर</div>
+              </div>
+            </label>
+
+            <label class="status-option-label" id="labelStatusNone">
+              <input type="radio" name="diksha_status" value="दीक्षा झालेली नाही">
+              <div>
+                <div class="status-text-title" data-i18n="statusOptNoneTitle">दीक्षा झालेली नाही</div>
+                <div class="status-text-desc" data-i18n="statusOptNoneDesc">साधक परिवार / भक्त</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Dynamic Section 1: दीक्षा झालेली आहे -->
+        <div id="sectionStatusCompleted" class="status-section active">
+          <div class="form-grid">
+            <!-- Diksha Date -->
+            <div class="form-group col-4" id="group-dikshaDate">
+              <label for="dikshaDate" class="form-label">
+                <span data-i18n="dikshaDateLabel">दीक्षा दिनांक</span> <span class="required-star">*</span>
+              </label>
+              <input type="date" id="dikshaDate" name="diksha_date" class="form-control" required>
+              <span class="error-message" data-i18n="dikshaDateError">कृपया दीक्षा दिनांक निवडा.</span>
+            </div>
+
+            <!-- Diksha Type -->
+            <div class="form-group col-4" id="group-dikshaType">
+              <label for="dikshaTypeSelect" class="form-label">
+                <span data-i18n="dikshaTypeLabel">दीक्षा प्रकार</span> <span class="required-star">*</span>
+              </label>
+              <select id="dikshaTypeSelect" name="diksha_type" class="form-control" required>
+                <option value="">-- दीक्षा प्रकार निवडा --</option>
+                <option value="मंत्र दीक्षा" data-i18n="dikshaTypeMantra">मंत्र दीक्षा</option>
+                <option value="शक्तिपात दीक्षा" data-i18n="dikshaTypeShaktipat">शक्तिपात दीक्षा</option>
+                <option value="इतर" data-i18n="dikshaTypeOther">इतर</option>
+              </select>
+              <span class="error-message" data-i18n="dikshaTypeError">कृपया दीक्षा प्रकार निवडा.</span>
+
+              <div id="otherDikshaTypeWrapper" class="dynamic-conditional-field">
+                <label for="dikshaTypeOther" class="form-label">
+                  <span data-i18n="dikshaTypeOtherLabel">इतर प्रकार नमूद करा</span> <span class="required-star">*</span>
+                </label>
+                <input type="text" id="dikshaTypeOther" name="diksha_type_other" class="form-control" placeholder="उदा. स्पर्श दीक्षा / विशेष दीक्षा">
+                <span class="error-message" data-i18n="dikshaTypeOtherError">कृपया दीक्षा प्रकार नमूद करा.</span>
+              </div>
+            </div>
+
+            <!-- Diksha Guru Name -->
+            <div class="form-group col-4" id="group-dikshaGuru">
+              <label for="dikshaGuruSelect" class="form-label">
+                <span data-i18n="dikshaGuruLabel">दीक्षा गुरूंचे नाव</span> <span class="required-star">*</span>
+              </label>
+              <select id="dikshaGuruSelect" name="diksha_guru" class="form-control" required>
+                <!-- Populated dynamically via language -->
+              </select>
+              <span class="error-message" data-i18n="dikshaGuruError">कृपया दीक्षा गुरूंचे नाव निवडा.</span>
+
+              <div id="otherGuruWrapper" class="dynamic-conditional-field">
+                <label for="dikshaGuruOther" class="form-label">
+                  <span data-i18n="dikshaGuruOtherLabel">गुरूंचे नाव टाईप करा</span> <span class="required-star">*</span>
+                </label>
+                <input type="text" id="dikshaGuruOther" name="diksha_guru_other" class="form-control" placeholder="उदा. पूज्य सद्गुरु महाराज">
+                <span class="error-message" data-i18n="dikshaGuruOtherError">कृपया गुरूंचे नाव टाईप करा.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Section 2: दीक्षा घेणारे / इच्छुक -->
+        <div id="sectionStatusAspiring" class="status-section">
+          <div class="info-notice-box">
+            <span>ℹ️</span>
+            <div data-i18n="aspiringNotice">दीक्षा इच्छुक साधक: दीक्षा तारीख आवश्यक नाही. तुम्ही इच्छित दीक्षा प्रकार किंवा आगामी शिबिराचा संदर्भ देऊ शकता.</div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group col-4" id="group-aspiringDikshaType">
+              <label for="aspiringDikshaTypeSelect" class="form-label" data-i18n="aspiringTypeLabel">
+                इच्छित दीक्षा प्रकार
+              </label>
+              <select id="aspiringDikshaTypeSelect" class="form-control">
+                <option value="शक्तिपात दीक्षा">शक्तिपात दीक्षा</option>
+                <option value="मंत्र दीक्षा">मंत्र दीक्षा</option>
+                <option value="मार्गदर्शन हवे आहे">मार्गदर्शन हवे आहे</option>
+                <option value="इतर">इतर</option>
+              </select>
+              <div id="otherAspiringTypeWrapper" class="dynamic-conditional-field">
+                <input type="text" id="aspiringTypeOther" class="form-control" placeholder="इच्छित प्रकार नमूद करा">
+              </div>
+            </div>
+
+            <div class="form-group col-4" id="group-aspiringGuru">
+              <label for="aspiringGuruSelect" class="form-label" data-i18n="aspiringGuruLabel">
+                इच्छित गुरू / परंपरा
+              </label>
+              <select id="aspiringGuruSelect" class="form-control">
+                <!-- Populated dynamically via language -->
+              </select>
+            </div>
+
+            <div class="form-group col-4" id="group-aspiringDate">
+              <label for="aspiringDateInput" class="form-label" data-i18n="aspiringDateLabel">
+                अपेक्षित तारीख / शिबिर
+              </label>
+              <input type="date" id="aspiringDateInput" class="form-control">
+              <span class="helper-text" data-i18n="aspiringDateHint">नियोजित असल्यास तारीख निवडा (ऐच्छिक)</span>
+            </div>
+
+            <div class="form-group col-12" id="group-aspiringNotes">
+              <label for="aspiringNotesInput" class="form-label" data-i18n="aspiringNotesLabel">
+                काही पूर्व-साधना / टिप्पणी
+              </label>
+              <input type="text" id="aspiringNotesInput" class="form-control" placeholder="उदा. मागील २ वर्षांपासून नियमित जप/ध्यान चालू आहे, आगामी शिबिरात सहभागी व्हायचे आहे">
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Section 3: दीक्षा झालेली नाही (साधक परिवार) -->
+        <div id="sectionStatusNone" class="status-section">
+          <div class="info-notice-box" style="background: #f0fdf4; border-color: #bbf7d0; color: #166534;">
+            <span>🌸</span>
+            <div data-i18n="noneNotice">साधक परिवार सदस्य: दीक्षा दिनांक किंवा गुरू अनिवार्य नाहीत. तुमची नोंद परिवार सदस्य म्हणून सुरक्षित ठेवली जाईल.</div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group col-6">
+              <label for="generalInterestSelect" class="form-label" data-i18n="generalInterestLabel">
+                साधनेची रुची / सहभाग
+              </label>
+              <select id="generalInterestSelect" class="form-control">
+                <option value="सत्संग व ध्यान" data-i18n="generalInterest1">सत्संग व ध्यान</option>
+                <option value="नामजप व ग्रंथ वाचन" data-i18n="generalInterest2">नामजप व ग्रंथ वाचन</option>
+                <option value="आश्रम सेवा व दर्शन" data-i18n="generalInterest3">आश्रम सेवा व दर्शन</option>
+                <option value="केवळ संपर्क व माहितीसाठी" data-i18n="generalInterest4">केवळ संपर्क व माहितीसाठी</option>
+                <option value="इतर" data-i18n="generalInterest5">इतर</option>
+              </select>
+            </div>
+
+            <div class="form-group col-6">
+              <label for="generalNotesInput" class="form-label" data-i18n="generalNotesLabel">
+                विशेष टिप्पणी / संदर्भ
+              </label>
+              <input type="text" id="generalNotesInput" class="form-control" placeholder="उदा. स्थानिक सत्संग मंडळ सदस्य">
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Form Actions Card -->
+      <div class="form-actions-card">
+        <button type="button" id="resetBtn" class="btn btn-outline">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          <span data-i18n="resetBtn">माहिती साफ करा</span>
+        </button>
+
+        <button type="submit" id="submitBtn" class="btn btn-primary">
+          <span class="spinner" id="submitSpinner"></span>
+          <svg id="submitIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          <span class="btn-text" id="submitBtnText" data-i18n="submitBtn">साधक नोंद जतन करा</span>
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Records Directory Modal -->
+  <div id="recordsModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          <span data-i18n="modalTitle">डेटाबेसमधील सर्व साधकांची यादी</span>
+        </h3>
+        <button type="button" class="modal-close-btn" id="closeRecordsBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="modal-controls-row">
+          <div class="filter-tabs-group">
+            <button type="button" class="filter-tab-btn active" data-status="all" data-i18n="tabAll">सर्व</button>
+            <button type="button" class="filter-tab-btn" data-status="दीक्षा झालेली आहे" data-i18n="tabCompleted">दीक्षा झालेले</button>
+            <button type="button" class="filter-tab-btn" data-status="दीक्षा घेणार / इच्छुक" data-i18n="tabAspiring">दीक्षा घेणारे/इच्छुक</button>
+            <button type="button" class="filter-tab-btn" data-status="दीक्षा झालेली नाही" data-i18n="tabNone">साधक परिवार</button>
+          </div>
+
+          <a href="/api/export/csv" class="btn btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.8rem; text-decoration: none;" data-i18n="downloadCsvBtn">
+            📥 एक्सेल/CSV डाऊनलोड
+          </a>
+        </div>
+
+        <div class="search-input-wrap">
+          <input type="text" id="recordSearchInput" class="form-control" placeholder="नाव, मोबाईल, जिल्हा, किंवा गुरूंनुसार शोधा...">
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="records-table">
+            <thead>
+              <tr id="tableHeaderRow">
+                <th>क्र.</th>
+                <th>साधकाचे नाव</th>
+                <th>मोबाईल</th>
+                <th>स्थान</th>
+                <th>दीक्षा स्थिती</th>
+                <th>तपशील</th>
+                <th>गुरू / संदर्भ</th>
+              </tr>
+            </thead>
+            <tbody id="recordsTableBody">
+              <tr>
+                <td colspan="7" style="text-align: center; padding: 2rem; color: #94a3b8;">
+                  माहिती लोड होत आहे...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Birthday & Diksha Anniversary Tracker Modal -->
+  <div id="trackerModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>
+          <span>🎂</span>
+          <span data-i18n="trackerModalTitle">उत्सव, वर्धापनदिन व वाढदिवस स्मरण</span>
+        </h3>
+        <button type="button" class="modal-close-btn" id="closeTrackerBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-controls-row">
+          <div class="filter-tabs-group" id="trackerTabGroup">
+            <button type="button" class="filter-tab-btn active" id="btnTabDikshaAnniversary" data-i18n="trackerTabDiksha">
+              आगामी दीक्षा वर्धापनदिन (पुढील ३० दिवस)
+            </button>
+            <button type="button" class="filter-tab-btn" id="btnTabBirthday" data-i18n="trackerTabBirthday">
+              आगामी वाढदिवस (पुढील ३० दिवस)
+            </button>
+          </div>
+        </div>
+
+        <!-- Diksha Anniversaries Grid -->
+        <div id="dikshaAnniversariesView">
+          <div class="anniversary-cards-grid" id="dikshaAnniversariesGrid">
+            <p style="text-align: center; grid-column: 1/-1; padding: 2rem; color: #94a3b8;">लोड होत आहे...</p>
+          </div>
+        </div>
+
+        <!-- Birthdays Grid -->
+        <div id="birthdaysView" style="display: none;">
+          <div class="anniversary-cards-grid" id="birthdaysGrid">
+            <p style="text-align: center; grid-column: 1/-1; padding: 2rem; color: #94a3b8;">लोड होत आहे...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Selfie / Camera Modal -->
+  <div id="cameraModal" class="modal-overlay">
+    <div class="modal-card camera-modal-card">
+      <div class="modal-header">
+        <h3>
+          <span>📸</span>
+          <span data-i18n="cameraModalTitle">थेट कॅमेरा / सेल्फी फोटो काढा</span>
+        </h3>
+        <button type="button" class="modal-close-btn" id="closeCameraBtn">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1rem;">
+        <div class="camera-viewfinder-container">
+          <div class="camera-viewport" id="cameraViewport">
+            <!-- Video feed for camera -->
+            <video id="cameraVideo" autoplay playsinline muted></video>
+            <!-- Still captured preview -->
+            <img id="cameraCapturedPreview" alt="Captured Preview">
+            <!-- Guide ring overlay -->
+            <div class="camera-guide-ring"></div>
+          </div>
+
+          <!-- Bottom controls -->
+          <div class="camera-controls-bottom" id="cameraShutterRow">
+            <button type="button" class="btn-camera-util" id="switchCameraBtn">
+              🔄 <span data-i18n="cameraSwitchBtn">कॅमेरा बदला</span>
+            </button>
+            <button type="button" class="btn-shutter" id="shutterBtn" title="फोटो काढा">
+              📸
+            </button>
+          </div>
+
+          <!-- Confirmation controls after photo snap -->
+          <div class="camera-controls-bottom camera-confirm-row" id="cameraConfirmRow">
+            <button type="button" class="btn btn-outline" id="retakePhotoBtn" style="color:#ffffff;border-color:rgba(255,255,255,0.4);">
+              🔄 <span data-i18n="cameraRetakeBtn">पुन्हा काढा</span>
+            </button>
+            <button type="button" class="btn btn-primary" id="confirmPhotoBtn">
+              ✅ <span data-i18n="cameraConfirmBtn">हा फोटो वापरा</span>
+            </button>
+          </div>
+
+          <!-- Hidden Canvas for frame snapshot -->
+          <canvas id="cameraCanvas" style="display: none;"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p><strong>साधक डायरी</strong> &copy; 2026. Shaktipat Parampara Sadhak Records & Celebrations.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/static/js/translations.js?v=3"></script>
+  <script src="/static/js/locations.js?v=3"></script>
+  <script src="/static/js/app.js?v=3"></script>
+</body>
+</html>
