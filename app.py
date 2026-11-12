@@ -13,7 +13,7 @@ import uuid
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import base64
-from flask import Flask, render_template, request, jsonify, Response
+from flask import Flask, render_template, request, jsonify, Response, send_from_directory
 from database import init_db, save_sadhak, get_all_sadhaks, get_sadhak_by_id, get_stats, get_upcoming_anniversaries
 
 IS_VERCEL = bool(os.environ.get('VERCEL'))
@@ -46,6 +46,10 @@ init_db()
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory(os.path.join(BASE_DIR, 'static'), filename)
 
 @app.route('/api/upload-photo', methods=['POST'])
 def upload_photo():
