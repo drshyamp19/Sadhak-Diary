@@ -43,7 +43,23 @@ def allowed_file(filename):
 # Initialize and apply migrations
 init_db()
 
+class VercelPathMiddleware:
+    """Normalize PATH_INFO when deployed behind Vercel serverless rewrites."""
+    def __init__(self, wsgi_app):
+        self.wsgi_app = wsgi_app
+
+    def __call__(self, environ, start_response):
+        path = environ.get('PATH_INFO', '')
+        if path.startswith('/api/index'):
+            environ['PATH_INFO'] = path[len('/api/index'):] or '/'
+        elif path == '/api' or path == '/api/':
+            environ['PATH_INFO'] = '/'
+        return self.wsgi_app(environ, start_response)
+
+app.wsgi_app = VercelPathMiddleware(app.wsgi_app)
+
 @app.route('/')
+@app.route('/api/index')
 def index():
     return render_template('index.html')
 
