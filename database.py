@@ -8,9 +8,22 @@ Supports:
 """
 import os
 import sqlite3
+import shutil
 from datetime import datetime, date
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sadhak_diary.db")
+IS_VERCEL = bool(os.environ.get('VERCEL'))
+
+if IS_VERCEL:
+    # Vercel has read-only root filesystem. Use writable /tmp directory
+    DB_PATH = '/tmp/sadhak_diary.db'
+    bundled_db = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sadhak_diary.db")
+    if os.path.exists(bundled_db) and not os.path.exists(DB_PATH):
+        try:
+            shutil.copyfile(bundled_db, DB_PATH)
+        except Exception as e:
+            print("Error initializing /tmp database:", e)
+else:
+    DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sadhak_diary.db")
 
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)

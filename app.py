@@ -12,13 +12,29 @@ import csv
 import uuid
 from datetime import datetime
 from werkzeug.utils import secure_filename
+import base64
 from flask import Flask, render_template, request, jsonify, Response
 from database import init_db, save_sadhak, get_all_sadhaks, get_sadhak_by_id, get_stats, get_upcoming_anniversaries
 
-app = Flask(__name__, static_folder='static', template_folder='templates')
+IS_VERCEL = bool(os.environ.get('VERCEL'))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'uploads', 'photos')
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app = Flask(
+    __name__,
+    static_folder=os.path.join(BASE_DIR, 'static'),
+    template_folder=os.path.join(BASE_DIR, 'templates')
+)
+
+if IS_VERCEL:
+    UPLOAD_FOLDER = '/tmp/uploads/photos'
+else:
+    UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads', 'photos')
+
+try:
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+except Exception:
+    pass
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
 
 def allowed_file(filename):
@@ -42,12 +58,19 @@ def upload_photo():
 
     if file and allowed_file(file.filename):
         ext = file.filename.rsplit('.', 1)[1].lower()
-        unique_name = f"sadhak_{uuid.uuid4().hex[:10]}_{int(datetime.now().timestamp())}.{ext}"
-        filepath = os.path.join(UPLOAD_FOLDER, unique_name)
-        file.save(filepath)
-        
-        photo_url = f"/static/uploads/photos/{unique_name}"
-        return jsonify({"success": True, "photo_url": photo_url})
+        if IS_VERCEL:
+            # On Vercel serverless, store as Base64 Data URL to prevent loss on container shutdown
+            file_bytes = file.read()
+            mime = 'image/png' if ext == 'png' else ('image/webp' if ext == 'webp' else 'image/jpeg')
+            b64_str = base64.b64encode(file_bytes).decode('utf-8')
+            photo_url = f"data:{mime};base64,{b64_str}"
+            return jsonify({"success": True, "photo_url": photo_url})
+        else:
+            unique_name = f"sadhak_{uuid.uuid4().hex[:10]}_{int(datetime.now().timestamp())}.{ext}"
+            filepath = os.path.join(UPLOAD_FOLDER, unique_name)
+            file.save(filepath)
+            photo_url = f"/static/uploads/photos/{unique_name}"
+            return jsonify({"success": True, "photo_url": photo_url})
     
     return jsonify({"success": False, "error": "Allowed formats: JPG, PNG, WEBP"}), 400
 
